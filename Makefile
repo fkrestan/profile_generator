@@ -2,12 +2,8 @@ init:
 	pipenv install \
 	&& pipenv install --dev
 
-run: build
-	FLASK_DEBUG=1 \
-	FLASK_APP=network_profile \
-	flask run --host 0.0.0.0
-
-test: build
+test:
+	PYTHONPATH=..:$(PYTHONPATH) \
 	py.test -vs --fulltrace tests/
 
 build:
@@ -17,7 +13,7 @@ dist: clean
 	python3 setup.py sdist bdist_wheel
 
 clean:
-	rm -rf build/ dist/ blooming_history_aggregator_service.egg-info/
+	rm -rf build/ dist/ *.egg-info/
 	find . -type d -name __pycache__ -exec rm -rf {} \+
 	find . -type f -name "*.pyc" -exec rm -rf {} \+
 
