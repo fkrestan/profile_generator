@@ -101,7 +101,7 @@ def parse_args():
     """Parse arguments and return parsed options."""
     parser = argparse.ArgumentParser(
         description=
-        'Generate "prediction profile" based on aggregated historical network data. See README for details about data format.'
+        'Generate "prediction profile" based on aggregated historical network data. See README.md for details about data format.'
     )
     parser.add_argument(
         '-v',
