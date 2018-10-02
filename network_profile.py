@@ -36,8 +36,12 @@ IP_PROTO_TRANS_TABLE = {
 
 LOG_FORMAT = '%(asctime)s %(filename)s:%(lineno)d %(levelname)s %(message)s'
 
+PROPHET_CHANGEPOINT_PRIOR_SCALE = 0.01
+PROPHET_PREDICT_PERIODS = 24
+
 
 def load_data(data_file_path):
+    logging.debug('Loading data from %s', data_file_path)
     data = pandas.read_csv(
         data_file_path,
         parse_dates=['time TIME_FIRST', 'time TIME_LAST'],
@@ -63,8 +67,11 @@ def load_data(data_file_path):
 
 
 def make_forecast(data):
-    model = fbprophet.Prophet(changepoint_prior_scale=0.01).fit(data)
-    future = model.make_future_dataframe(periods=24, freq='H', include_history=False)
+    logging.debug('Computing forecast: changepoint_prior_scale: %d. predict_periods: %d',
+                  PROPHET_CHANGEPOINT_PRIOR_SCALE, PROPHET_PREDICT_PERIODS)
+    model = fbprophet.Prophet(changepoint_prior_scale=PROPHET_CHANGEPOINT_PRIOR_SCALE).fit(data)
+    future = model.make_future_dataframe(
+        periods=PROPHET_PREDICT_PERIODS, freq='H', include_history=False)
     forecast = model.predict(future)
 
     return forecast.set_index('ds')[['yhat', 'yhat_lower', 'yhat_upper']].to_dict('index')
@@ -88,7 +95,7 @@ def make_profile(data_file_path):
             # Drop top 5% values (outliers)
             proto_data_prophet_95th = proto_data_prophet.loc[
                 proto_data_prophet['y'] <= proto_data_prophet['y'].quantile(0.95)]
-
+            logging.debug('Generating forecast for "%s" "%s" metric', name, metric)
             forecasts[name][metric] = {
                 k.isoformat(): v
                 for k, v in make_forecast(proto_data_prophet_95th).items()
@@ -111,7 +118,7 @@ def parse_args():
         const=logging.DEBUG,
         default=logging.INFO,
         help='Increase logging verbosity')
-    parser.add_argument('-d', '--data-root', dest='data_root', help='Path to data root directory')
+    parser.add_argument('data_root', help='Path to data root directory')
     return parser.parse_args()
 
 
@@ -133,10 +140,12 @@ def main():
         profile_json = json.dumps(profile)
 
         profile_path = directory / 'profile-{}.json'.format(datetime.datetime.now().isoformat())
+        logging.info('Writing profile to %s', profile_path)
         profile_path.write_text(profile_json)
         latest_link_path = directory / 'latest.json.new'
         latest_link_path.symlink_to(profile_path.name)
         latest_link_path.replace(directory / 'latest.json')
+
 
 if __name__ == '__main__':
     main()
