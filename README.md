@@ -1,10 +1,35 @@
 Network Profile Service
 =======================
 
+This scripts generates network "profile" based on network communication history.
+The profile contains hourly prediction (read estimate) of the several network
+utilization metrics: packet, byte and flow count. The actual metric ultimately
+depends on the supplied data, but the example [NEMEA][1] config provided generates
+the metric sum over one hour period.
+
+The prediction heavily relies on [Facebook Prophet][2].
+
+
 Usage
 -----
 
+``` shell
+usage: network_profile.py [-h] [-v] data_root
 
+Generate "prediction profile" based on aggregated historical network data. See
+README.md for details about data format.
+
+positional arguments:
+  data_root      Path to data root directory
+
+optional arguments:
+  -h, --help     show this help message and exit
+  -v, --verbose  Increase logging verbosity
+```
+
+The `data_root` needs to have specific structure: `$DATA_ROOT/$UUID/data.csv`.
+There can be multiple `$UUID` folders, but the name has to be in the standard
+uuid format. See input and output data formats.
 
 
 Input Data Format
@@ -69,3 +94,4 @@ format is best described by example (see "comments" inline):
 ```
 
 [1]: https://github.com/CESNET/Nemea
+[2]: https://facebook.github.io/prophet/
