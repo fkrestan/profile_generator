@@ -9,7 +9,7 @@ with open("README.md", "r") as f:
 setup(
     author='Filip Krestan',
     author_email='krestfi1@fit.cvut.cz',
-    description='Flask application generating expected netowrk utilization profile based on historical data.',
+    description='Script generating expected netowrk utilization profile based on historical data.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     name='network_profile',
