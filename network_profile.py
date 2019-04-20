@@ -123,7 +123,6 @@ def parse_args():
 
 
 def main():
-    # fbprophet.logging.
     args = parse_args()
     logging.basicConfig(level=args.loglevel, format=LOG_FORMAT)
 
