@@ -36,9 +36,9 @@ Input Data Format
 -----------------
 
 The input data file must be located in `$DATAFILE/$UUID/data.csv`. These are
-basically an output of [NEMEA][1] Aggregator plugin written by `logger` plugin (TODO
-write actual description of data fields). The example `.sup` NEMEA configuration
-can be found in `NEMEA_example_config.sup` file.
+basically an output of [NEMEA][1] Aggregator plugin written by `logger` plugin.
+The example `.sup` NEMEA configuration can be found in `NEMEA_example_config.sup`
+file.
 
 ```csv
 uint64 BYTES,time TIME_FIRST,time TIME_LAST,uint32 COUNT,uint32 PACKETS,uint8 PROTOCOL
@@ -46,6 +46,10 @@ uint64 BYTES,time TIME_FIRST,time TIME_LAST,uint32 COUNT,uint32 PACKETS,uint8 PR
 124839591977,2018-08-19T18:48:25.766,2018-08-19T19:48:34.051,2842950,108201719,6
 ...
 ```
+
+The `BYTES`, `PACKETS` and `COUNT` should contain a sum of byte, packet and flow
+count observed in the time period given in `TIME_FIRST` and `TIME_LAST` period.
+Each time period should span one hour and not overlap with each other.
 
 
 Output Data Format
@@ -87,7 +91,7 @@ format is best described by example (see "comments" inline):
         "yhat_upper": 6998606.405906358
       },
       ...
-    }
+    },
   },
   ...
 }
