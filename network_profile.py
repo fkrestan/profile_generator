@@ -69,9 +69,10 @@ def load_data(data_file_path):
 def make_forecast(data):
     logging.debug('Computing forecast: changepoint_prior_scale: %d. predict_periods: %d',
                   PROPHET_CHANGEPOINT_PRIOR_SCALE, PROPHET_PREDICT_PERIODS)
-    model = fbprophet.Prophet(changepoint_prior_scale=PROPHET_CHANGEPOINT_PRIOR_SCALE).fit(data)
-    future = model.make_future_dataframe(
-        periods=PROPHET_PREDICT_PERIODS, freq='H', include_history=False)
+    model = fbprophet.Prophet(changepoint_prior_scale=PROPHET_CHANGEPOINT_PRIOR_SCALE, 
+                              seasonality_mode='multiplicative').fit(data)
+    future = model.make_future_dataframe(periods=PROPHET_PREDICT_PERIODS,
+                                         freq='H', include_history=False)
     forecast = model.predict(future)
 
     return forecast.set_index('ds')[['yhat', 'yhat_lower', 'yhat_upper']].to_dict('index')
