@@ -59,7 +59,7 @@ Output data are written to `$DATAFILE/$UUID/profile-$TIMESTAMP.json`. Also,
 `$DATAFILE/$UUID/latest.json` symlink always points to the latest profile. The
 format is best described by example (see "comments" inline):
 
-```json
+```
 {
   // Protocol identified by ip protocol number (by default `TCP`, `UDP`, `ICMP`)
   "TCP": {
