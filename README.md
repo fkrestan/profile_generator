@@ -27,15 +27,16 @@ optional arguments:
   -v, --verbose  Increase logging verbosity
 ```
 
-The `data_root` needs to have specific structure: `$DATA_ROOT/$UUID/data.csv`.
-There can be multiple `$UUID` folders, but the name has to be in the standard
-uuid format. See input and output data formats.
+The `data_root` needs to have specific structure: `$DATA_ROOT/$PREFIX_TAG/data.csv`.
+There can be multiple `$PREFIX_TAG` folders, where `$PREFIX_TAG` is positive
+integer used to identify the network prefix (see [prefix_tags NEMEA module][3]).
+See input and output data formats.
 
 
 Input Data Format
 -----------------
 
-The input data file must be located in `$DATAFILE/$UUID/data.csv`. These are
+The input data file must be located in `$DATA_ROOT/$PREFIX_TAG/data.csv`. These are
 basically an output of [NEMEA][1] Aggregator plugin written by `logger` plugin.
 The example `.sup` NEMEA configuration can be found in `NEMEA_example_config.sup`
 file.
@@ -55,9 +56,10 @@ Each time period should span one hour and not overlap with each other.
 Output Data Format
 ------------------
 
-Output data are written to `$DATAFILE/$UUID/profile-$TIMESTAMP.json`. Also,
-`$DATAFILE/$UUID/latest.json` symlink always points to the latest profile. The
-format is best described by example (see "comments" inline):
+Output data are written to `$DATA_ROOT/$PREFIX_TAG/profile-$TIMESTAMP.json`,
+where `$TIMESTAMP` is ISO8601 timestamp. Also, `$DATA_ROOT/$PREFIX_TAG/latest.json`
+symlink always points to the latest profile. The format is best described by
+example (see "comments" inline):
 
 ```
 {
@@ -99,3 +101,4 @@ format is best described by example (see "comments" inline):
 
 [1]: https://github.com/CESNET/Nemea
 [2]: https://facebook.github.io/prophet/
+[3]: https://github.com/CESNET/Nemea-Modules/tree/master/prefix_tags

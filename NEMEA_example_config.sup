@@ -40,7 +40,7 @@
     <name>logger</name>
     <enabled>true</enabled>
     <!-- Append output to data.csv (include header) -->
-    <params>-t -a /data/960df7ec-bb0a-41ed-a50f-d5bd87d8be4b/data.csv</params>
+    <params>-t -a /data/1/data.csv</params>
     <path>/usr/local/bin/logger</path>
     <trapinterfaces>
         <interface>

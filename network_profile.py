@@ -18,6 +18,7 @@ import argparse
 import datetime
 import json
 import logging
+import re
 from pathlib import Path
 
 import pandas
@@ -38,6 +39,8 @@ LOG_FORMAT = '%(asctime)s %(filename)s:%(lineno)d %(levelname)s %(message)s'
 
 PROPHET_CHANGEPOINT_PRIOR_SCALE = 0.01
 PROPHET_PREDICT_PERIODS = 24
+
+RE_PREFIX_TAG = re.compile(r'^\d+$')
 
 
 def load_data(data_file_path):
@@ -69,7 +72,7 @@ def load_data(data_file_path):
 def make_forecast(data):
     logging.debug('Computing forecast: changepoint_prior_scale: %d. predict_periods: %d',
                   PROPHET_CHANGEPOINT_PRIOR_SCALE, PROPHET_PREDICT_PERIODS)
-    model = fbprophet.Prophet(changepoint_prior_scale=PROPHET_CHANGEPOINT_PRIOR_SCALE, 
+    model = fbprophet.Prophet(changepoint_prior_scale=PROPHET_CHANGEPOINT_PRIOR_SCALE,
                               seasonality_mode='multiplicative').fit(data)
     future = model.make_future_dataframe(periods=PROPHET_PREDICT_PERIODS,
                                          freq='H', include_history=False)
@@ -127,9 +130,8 @@ def main():
     args = parse_args()
     logging.basicConfig(level=args.loglevel, format=LOG_FORMAT)
 
-    directories = [
-        x for x in Path(args.data_root).glob('????????-????-????-????-????????????') if x.is_dir()
-    ]
+    directories = (x for x in Path(args.data_root).iterdir()
+                   if x.is_dir() and RE_PREFIX_TAG.match(x.name))
 
     for directory in directories:
         logging.info('Processing %s', directory)
